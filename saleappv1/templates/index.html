@@ -1,0 +1,54 @@
+{% extends 'layout/base.html' %}
+{% block content %}
+<h2>THÔNG TIN CHUYẾN BAY</h2>
+
+{% if chuyenbay %}
+<div class="table-wrapper">
+    <table class="fl-table">
+        <thead>
+        <tr>
+            <th>Mã Chuyến Bay</th>
+            <th>Sân Bay Đi</th>
+            <th>Sân Bay Đến</th>
+            <th>Ngày Giờ</th>
+            <th>Thời Gian Bay</th>
+            <th>Giá vé </th>
+            <th>Thông tin chi tiết</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for p in chuyenbay %}
+        <tr>
+            <td>{{ p.macb }}</td>
+            {% for tb in tuyenbay %}
+            {% if p.macb == tb.matb %}
+            {% for sb in sanbay %}
+            {% if tb.sanbaydi_id == sb.masb %}
+            <td>{{ sb.tensb }}</td>
+            {% endif %}
+            {% if tb.sanbayden_id == sb.masb %}
+            <td>{{ sb.tensb }}</td>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+            {% endfor %}
+            <td>{{ p.ngaygio }}</td>
+            <td>{{ p.thoigianbay }}</td>
+            {% for tb in tuyenbay %}
+            {% if p.tuyenbay_id == tb.matb %}
+            <td> {{ tb.gia }}</td>
+            <td><a href="/chuyenbay/{{p.macb}}" class="btn btn-primary">Xem chi tiết</a></td>
+            {% endif %}
+            {% endfor %}
+        </tr>
+
+        {% endfor %}
+
+        <tbody>
+    </table>
+</div>
+{% else %}
+<p class="text-info">Không có chuyến bay nào!!!</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends 'layout/base.html' %}
+{% block content %}
+</div>{% if flag == 1 %}
+<strong>Tạo yêu cầu thành công!</strong> Bạn có muốn quay về <a href="/" class="alert-link">Trang chủ</a>?
+
+<div class="alert alert-success alert-dismissible  fade show">
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+
+{% endif %}
+{% if err_msg %}
+<div class="alert alert-danger alert-dismissible  fade show">
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <strong>{{err_msg}}</strong>
+</div>
+
+{% endif %}
+
+
+<form method="post" enctype="multipart/form-data" action="/datve">
+
+    <div class="mb-3 mt-3">
+        <label for="chuyenbay" class="form-label">MÃ CHUYẾN BAY:</label>
+        <input type="text" class="form-control" id="chuyenbay" required placeholder="Nhập mã chuyến bay"
+               name="chuyenbay">
+    </div>
+    <div class="mb-3 mt-3">
+        <label for="hangve" class="form-label">HẠNG VÉ:</label>
+        <input type="text" class="form-control" id="hangve" required placeholder="Nhập hạng vé (1 hoặc 2)"
+               name="hangve">
+    </div>
+    <div class="mb-3 mt-3">
+        <label for="name" class="form-label">HỌ TÊN:</label>
+        <input type="text" class="form-control" id="name" required placeholder="Nhập họ tên" name="name">
+    </div>
+    <div class="mb-3 mt-3">
+        <label for="phone" class="form-label">SỐ ĐIỆN THOẠI:</label>
+        <input type="text" class="form-control" id="phone" required placeholder="Nhập số điện thoại" name="phone">
+    </div>
+    <div class="mb-3 mt-3">
+        <label for="cccd" class="form-label">CĂN CƯỚC CÔNG DÂN:</label>
+        <input type="text" class="form-control" id="cccd" required placeholder="Nhập căn cước công dân" name="cccd">
+    </div>
+
+    <div>
+        {% if current_user.is_authenticated %}
+        <div>
+            <input type="submit" value="Đặt vé" class="btn btn-success">
+        </div>
+        {% else %}
+        <p>Vui lòng <a href="/login?next=/datve">đăng nhập</a> để đặt vé</p>
+        {% endif %}
+    </div>
+</form>
+
+
+{% if chuyenbay %}
+<div class="table-wrapper">
+    <table class="fl-table">
+        <thead>
+        <tr>
+            <th>Mã Chuyến Bay</th>
+            <th>Sân Bay Đi</th>
+            <th>Sân Bay Đến</th>
+            <th>Ngày Giờ</th>
+            <th>Thời Gian Bay</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for p in chuyenbay %}
+
+        <tr>
+            <td>{{ p.macb }}</td>
+            {% for tb in tuyenbay %}
+            {% if p.macb == tb.matb %}
+            {% for sb in sanbay %}
+            {% if tb.sanbaydi_id == sb.masb %}
+            <td>{{ sb.tensb }}</td>
+            {% endif %}
+            {% if tb.sanbayden_id == sb.masb %}
+            <td>{{ sb.tensb }}</td>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+            {% endfor %}
+            <td>{{ p.ngaygio }}</td>
+            <td>{{ p.thoigianbay }}</td>
+        </tr>
+        {% endfor %}
+        <tbody>
+    </table>
+</div>
+{% else %}
+<p class="text-info">Không có chuyến bay nào!!!</p>
+{% endif %}
+
+{% endblock %}
